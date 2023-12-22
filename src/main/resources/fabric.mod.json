@@ -1,0 +1,43 @@
+{
+	"schemaVersion": 1,
+	"id": "winters_append",
+	"version": "${version}",
+	"name": "Winter's Append",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Wintermourn"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/winters_append/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"wintermourn.wintersappend.WintersAppend"
+		],
+		"client": [
+			"wintermourn.wintersappend.client.WintersAppendClient"
+		],
+		"fabric-datagen": [
+			"wintermourn.wintersappend.WintersAppendDataGenerator"
+		],
+		"emi": [
+			"wintermourn.wintersappend.integration.emi.AppendEmi"
+		]
+	},
+	"mixins": [
+		"winters_append.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.24",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"emi": "1.0.24+1.20.1"
+	}
+}

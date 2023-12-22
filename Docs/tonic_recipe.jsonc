@@ -1,0 +1,37 @@
+// Tonic Recipe Format
+// Recipe type: winters_append:tonic_stand_recipe
+{
+  // Required for the game to realize that this is a tonic recipe.
+  "type": "winters_append:tonic_stand_recipe",
+  // List of required inputs to brew the effect. This list can be up to three ingredients long.
+  "inputs": [
+    {
+      //item or tag
+      "type": "item",
+      //[type]: [identifier]
+      "item": "minecraft:magenta_dye"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  // Any effect ID in the game.
+  "output": "minecraft:health_boost",
+  // (Optional) How many times the effect can be added to a tonic, period.
+  // Default: 99
+  "application_limit": 1,
+  // (Optional) Length of the brewing time, in ticks.
+  // Default: 200
+  "brewing_time": 1200,
+  // (Optional) How much of the Blaze Powder meter the recipe uses.
+  // Default: 10
+  "fuel_price": 30,
+  // (Optional) How much of the Purity meter the recipe uses.
+  // Default: 10
+  "purity_needed": 20
+}

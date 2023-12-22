@@ -1,0 +1,20 @@
+{
+    "textures": {
+        "water": "minecraft:block/water_still",
+        "particle": "winters_append:block/tonic_stand_body"
+    },
+    "elements": [
+        {
+            "name": "water",
+            "from": [4, 5, 4],
+            "to": [12, 6, 12],
+            "rotation": {"angle": 0, "axis": "y", "origin": [1, 0, 1]},
+            "color": 0,
+            "faces": {
+                "up": {"uv": [0, 1, 8, 9], "texture": "#water",
+                    "tintindex": 0
+                }
+            }
+        }
+    ]
+}

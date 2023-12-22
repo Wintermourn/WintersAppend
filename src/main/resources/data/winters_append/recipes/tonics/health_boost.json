@@ -1,0 +1,22 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:magenta_dye"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  "output": "minecraft:health_boost",
+  "application_limit": 1,
+  "brewing_time": 1200,
+  "fuel_price": 30,
+  "purity_needed": 20
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "tonic_stand",
+  "pattern": [
+    " C ",
+    "SBS"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:cauldron"
+    },
+    "B": {
+      "item": "minecraft:blaze_powder"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "winters_append:tonic_stand",
+    "count": 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:phantom_membrane"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:feather"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:bone"
+    }
+  ],
+  "output": "winters_append:immune/kinetic",
+  "brewing_time": 800,
+  "fuel_price": 15,
+  "purity_needed": 10
+}

@@ -1,0 +1,21 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:magenta_dye"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  "output": "winters_append:minor/pos/health_boost",
+  "brewing_time": 600,
+  "fuel_price": 10,
+  "purity_needed": 5
+}

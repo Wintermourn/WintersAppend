@@ -1,0 +1,25 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "winters_append:block/tonic_stand_preserving"
+      }
+    },
+    {
+      "apply": {
+        "model": "winters_append:block/tonic_stand_bottle"
+      },
+      "when": {
+        "has_bottle": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "winters_append:block/tonic_stand_empty"
+      },
+      "when": {
+        "has_bottle": "false"
+      }
+    }
+  ]
+}

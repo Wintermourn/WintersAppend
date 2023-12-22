@@ -1,0 +1,22 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:sweet_berries"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:diamond"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "output": "winters_append:immune/thorns",
+  "application_limit": 2,
+  "brewing_time": 1200,
+  "fuel_price": 25,
+  "purity_needed": 20
+}

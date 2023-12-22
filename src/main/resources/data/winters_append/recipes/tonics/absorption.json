@@ -1,0 +1,21 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:gold_nugget"
+    }
+  ],
+  "output": "minecraft:absorption",
+  "brewing_time": 400,
+  "fuel_price": 6,
+  "purity_needed": 0
+}

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "wintermourn.wintersappend.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "common.EntityMixin",
+    "common.LivingEntityMixin",
+    "common.PlayerEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}

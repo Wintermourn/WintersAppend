@@ -1,0 +1,22 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "tag",
+      "tag": "c:dyes"
+    },
+    {
+      "type": "tag",
+      "tag": "c:dyes"
+    },
+    {
+      "type": "tag",
+      "tag": "c:dyes"
+    }
+  ],
+  "output": "minecraft:nausea",
+  "application_limit": 99,
+  "brewing_time": 600,
+  "fuel_price": 0,
+  "purity_needed": 1
+}

@@ -1,0 +1,22 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:fermented_spider_eye"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:black_dye"
+    }
+  ],
+  "output": "winters_append:immune/antivenom",
+  "application_limit": 1,
+  "brewing_time": 1600,
+  "fuel_price": 25,
+  "purity_needed": 20
+}

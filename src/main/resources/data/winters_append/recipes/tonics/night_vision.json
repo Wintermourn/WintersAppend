@@ -1,0 +1,22 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:golden_carrot"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:glow_ink_sac"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:spider_eye"
+    }
+  ],
+  "output": "minecraft:night_vision",
+  "application_limit": 1,
+  "brewing_time": 1200,
+  "fuel_price": 20,
+  "purity_needed": 28
+}

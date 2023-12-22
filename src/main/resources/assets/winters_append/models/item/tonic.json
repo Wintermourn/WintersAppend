@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "winters_append:item/tonic_overlay",
+        "layer1": "winters_append:item/tonic"
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:light_blue_dye"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:sugar"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:sugar"
+    }
+  ],
+  "output": "winters_append:minor/pos/speed",
+  "brewing_time": 600,
+  "fuel_price": 10,
+  "purity_needed": 2
+}

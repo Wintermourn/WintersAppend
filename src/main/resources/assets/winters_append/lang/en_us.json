@@ -1,0 +1,75 @@
+{
+  "group.winters_append.main": "Winter's Append",
+
+  "item.winters_append.tonic.effect.empty": "Uncraftable Tonic",
+  "item.winters_append.tonic.effect.water": "Water Tonic",
+  "item.winters_append.soul_meal": "Soul Meal",
+  "tooltip.winters_append.soul_meal.0": "Has a much higher rate of dropping",
+  "tooltip.winters_append.soul_meal.1": "Gypsophila when fertilizing.",
+
+  "tonic.none": "◇ Empty",
+  "tonic.effect_entry": "◇ %s",
+  "tonic.withAmplifier": "%s %s",
+
+  "tonic.fillLevel": "%s/%s Effects",
+  "tonic.full": "Max Effects",
+  "tonic.duration": "Lasts for %s",
+
+  "tonic.name.none": "Empty Tonic",
+  "tonic.mixture": "Blended Tonic",
+  "tonic.name.generic": "%s Tonic",
+  "tonic.name.health_boost": "Vitality Tonic",
+  "tonic.name.absorption": "Shielding Tonic",
+  "tonic.name.speed": "Fast Walking Tonic",
+  "tonic.name.armor": "Iron Skin Tonic",
+  "tonic.name.resistance.physical": "Melee Resistance Tonic",
+  "tonic.name.resistance.projectile": "Ranged Resistance Tonic",
+  "tonic.name.antivenom": "Antivenom",
+  "tonic.name.dethorn": "Dethorning Tonic",
+  "tonic.name.kinetic": "Velocity Protection Tonic",
+  "tonic.name.nausea": "Hangover Tonic",
+
+  "tonic.effect.absorption": "  +%s Absorption Hearts",
+  "tonic.effect.antivenom": "  Cannot be poisoned.",
+  "tonic.effect.nausea": "  A terrible idea.",
+  "tonic.effect.dethorn": "  Take %s%% damage from thorns.",
+  "tonic.effect.dethorn.full": "  Not hurt by thorns.",
+  "tonic.effect.kinetic": "  Take %s%% damage from kinetic sources.",
+  "tonic.effect.kinetic.full": "  Not hurt by kinetic sources.",
+
+  "effect.winters_append.minor.pos.health_boost": "Minor Health Boost",
+  "effect.winters_append.minor.pos.absorption": "Minor Absorption",
+  "effect.winters_append.minor.pos.armor": "Iron Skin",
+  "effect.winters_append.minor.pos.speed": "Minor Swiftness",
+  "effect.winters_append.minor.pos.resistance.phys": "Physical Resist",
+  "effect.winters_append.minor.pos.resistance.proj": "Projectile Resist",
+
+  "effect.winters_append.minor.neg.armor": "Vulnerable",
+  "effect.winters_append.minor.neg.speed": "Minor Slowness",
+
+  "effect.winters_append.immune.antivenom": "Antivenom",
+  "effect.winters_append.immune.thorns": "Dethorning",
+  "effect.winters_append.immune.kinetic": "Kinetic Resist",
+
+  "attribute.name.append.resistance.physical": "Physical Damage Resistance",
+  "attribute.name.append.resistance.projectile": "Projectile Damage Resistance",
+
+  "block.winters_append.tonic_stand": "Tonic Brewery",
+  "tip.tonic_stand.preserving": "×2 Fuel Efficiency\n×2 Purity Efficiency\n×0.75 Time Efficiency",
+
+  "block.winters_append.gypsophila": "Gypsophila",
+  "block.winters_append.potted_gypsophila": "Potted Gypsophila",
+
+  "container.winters_append.tonic": "Tonic Brewery",
+
+  "recipe.cost.fuelCost": "Costs %s Fuel",
+  "recipe.explainFuel": "At least 1 Fuel is required to brew.",
+  "recipe.cost.noPurity": "Insufficient Purity:",
+  "recipe.cost.purityCost": "Uses %s Purity",
+  "recipe.cost.time": "Brews in %ss",
+  "recipe.cost.limit": "Limit: %s",
+  "recipe.explainLimit": "This Tonic can only have %s of this\neffect, regardless of the number of\neffects it can hold.",
+  "recipe.explainPurity": "When Purity is exhausted, recipes\ncost more and take longer to brew.",
+
+  "emi.category.winters_append.tonic_stand": "Tonic Brewing"
+}
