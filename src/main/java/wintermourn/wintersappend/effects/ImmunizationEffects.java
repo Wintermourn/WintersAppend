@@ -29,7 +29,7 @@ public class ImmunizationEffects {
                 );
 
         DETHORNING = new DamageResistStatusEffect(StatusEffectCategory.BENEFICIAL, 0xaaffaa)
-                .addSources(DamageTypes.THORNS.toString(), DamageTypes.SWEET_BERRY.toString())
+                .addSources(DamageTypes.THORNS.toString(), DamageTypes.SWEET_BERRY.toString(), DamageTypes.CACTUS.toString())
                 .setProtection(0.5).setAmplifierProtection(0.5).addAttributeModifier(
                         EntityAttributes.GENERIC_ATTACK_SPEED,
                         "c84dc22b-b8ef-4e61-8829-961988cd9151",
@@ -43,7 +43,7 @@ public class ImmunizationEffects {
                 );
 
         KINETIC_RESIST = new DamageResistStatusEffect(StatusEffectCategory.BENEFICIAL, 0xaaffaa)
-                .addSources(DamageTypes.ELYTRA.toString(), DamageTypes.FALLING.toString(), DamageTypes.CACTUS.toString())
+                .addSources(DamageTypes.ELYTRA.toString(), DamageTypes.FALLING.toString())
                 .setProtection(0.5).setAmplifierProtection(0.1).addAttributeModifier(
                         EntityAttributes.GENERIC_ARMOR,
                         "adf62d26-0cb1-4421-935a-af3d478c2ffb",
