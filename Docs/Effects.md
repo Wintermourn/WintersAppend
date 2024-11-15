@@ -12,6 +12,8 @@ Increases speed by 5 percent per level.
 Decreases damage from physical sources (swords, fists, ...) by 5 percent per level.
 #### Projectile Resistance (`winters_append:minor/pos/resistance/proj`)
 Decreases damage from projectile sources (arrows, ...) by 5 percent per level.
+#### Concealed (`winters_append:major/concealed`)
+The player is entirely invisible to all mobs until they attack.
 
 ### Negative
 #### Minor Slowness (`winters_append:minor/neg/speed`)
@@ -30,3 +32,14 @@ Decreases speed (attack & movement) by 5% per level.
 #### Kinetic Resist (`winters_append:immune/kinetic`)
 Decreases damage taken from falling and elytra by 50%, increasing by 10% per level.
 Decreases Armor by 10% per level.
+#### Purity (`winters_append:immune/purity`)
+Removes negative effects depending on the level of purity, then disappears.
+
+### Enchantments
+Effects that provide a global Enchantment effect (currently only when mining).
+#### Fortune (`winters_append:major/fortune`)
+Provides one level of the Fortune enchant to any blocks broken.
+Chances of the enchantment applying depend on the level of the effect, never reaching 100%.
+#### Silk Touch (`winters_append:major/silk_touch`)
+Provides Silk Touch for any blocks broken.
+Level I activates at 80% chance, Level II always activates.

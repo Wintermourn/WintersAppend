@@ -5,7 +5,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
@@ -13,8 +12,8 @@ import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import wintermourn.wintersappend.block.AppendBlocks;
 import wintermourn.wintersappend.block.entity.TonicStandBlockEntity;
+import wintermourn.wintersappend.config.AppendFuelsConfig;
 import wintermourn.wintersappend.item.TonicItem;
 import wintermourn.wintersappend.item.TonicUtil;
 
@@ -32,7 +31,7 @@ public class TonicStandScreenHandler extends ScreenHandler {
     //private final Slot chargeSlot;
 
     public TonicStandScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
-        this(syncId, playerInventory, playerInventory.player.getWorld().getBlockEntity(buf.readBlockPos()), new ArrayPropertyDelegate(6));
+        this(syncId, playerInventory, playerInventory.player.getWorld().getBlockEntity(buf.readBlockPos()), new ArrayPropertyDelegate(7));
     }
 
     public TonicStandScreenHandler(int syncId, PlayerInventory playerInventory, BlockEntity blockEntity,
@@ -42,7 +41,7 @@ public class TonicStandScreenHandler extends ScreenHandler {
         this.blockEntity = (TonicStandBlockEntity) blockEntity;
 
         checkSize((Inventory) blockEntity, 6);
-        checkDataCount(delegate, 6);
+        checkDataCount(delegate, 7);
         this.inventory = (Inventory) blockEntity;
         inventory.onOpen(playerInventory.player);
         propertyDelegate = delegate;
@@ -130,6 +129,12 @@ public class TonicStandScreenHandler extends ScreenHandler {
     {
         return propertyDelegate.get(2) / (float) blockEntity.getMaxPurity();
     }
+    public int getBrewingMode() {
+        return propertyDelegate.get(6);
+    }
+    public void setBrewingMode(int mode) {
+        propertyDelegate.set(6, mode);
+    }
 
     public float getScaledPurityEstimate() {
         return propertyDelegate.get(5) / (float) blockEntity.getMaxPurity();
@@ -149,7 +154,7 @@ public class TonicStandScreenHandler extends ScreenHandler {
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return stack.getItem() == Items.BLAZE_POWDER;
+            return AppendFuelsConfig.GetHeatFuel(stack) > -1;
         }
     }
     private class PuritySlot extends Slot
@@ -160,7 +165,7 @@ public class TonicStandScreenHandler extends ScreenHandler {
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return stack.getItem() == AppendBlocks.GYPSOPHILA.getItem();
+            return AppendFuelsConfig.GetPurity(stack) > -1;
         }
     }
     private class ResultSlot extends Slot

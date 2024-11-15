@@ -13,11 +13,13 @@ import java.util.List;
 
 public class AppendItems {
     public static final Item TONIC;
+    public static final Item CATALYST;
     public static final BoneMealItem SOUL_MEAL;
 
     static
     {
         TONIC = new TonicItem(new Item.Settings().maxCount(3));
+        CATALYST = new CatalystItem(new Item.Settings());
         SOUL_MEAL = new ExtendedBoneMealItem(new Item.Settings(), List.of(
                 Text.translatable("tooltip.winters_append.soul_meal.0"),
                 Text.translatable("tooltip.winters_append.soul_meal.1")
@@ -27,6 +29,7 @@ public class AppendItems {
     public static void Register()
     {
         Registry.register(Registries.ITEM, new Identifier(WintersAppend.MOD_ID, "tonic"), TONIC);
+        Registry.register(Registries.ITEM, new Identifier(WintersAppend.MOD_ID, "catalyst"), CATALYST);
         Registry.register(Registries.ITEM, new Identifier(WintersAppend.MOD_ID, "soul_meal"), SOUL_MEAL);
     }
 

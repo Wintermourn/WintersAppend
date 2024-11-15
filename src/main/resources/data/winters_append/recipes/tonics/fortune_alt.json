@@ -1,0 +1,22 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:glistering_melon_slice"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:diamond"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:redstone"
+    }
+  ],
+  "output": "winters_append:major/fortune",
+  "brewing_time": 1800,
+  "fuel_price": 40,
+  "purity_needed": 45,
+  "span_offset": -2200
+}

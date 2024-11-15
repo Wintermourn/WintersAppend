@@ -9,7 +9,9 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import wintermourn.wintersappend.WintersAppend;
+import wintermourn.wintersappend.config.AppendFuelsConfig;
 import wintermourn.wintersappend.effects.MinorEffects;
 import wintermourn.wintersappend.item.AppendItems;
 
@@ -17,6 +19,7 @@ public class AppendBlocks {
     public static final Identifier TONIC_STAND_ID = new Identifier(WintersAppend.MOD_ID, "tonic_stand");
     public static final BlockItemPair TONIC_STAND;
 
+    public static final Identifier GYPSOPHILA_ID = new Identifier(WintersAppend.MOD_ID, "gypsophila");
     public static final BlockItemPair GYPSOPHILA;
     public static final Block GYPSOPHILA_POTTED;
 
@@ -44,7 +47,8 @@ public class AppendBlocks {
     public static void Register()
     {
         register(TONIC_STAND_ID, TONIC_STAND);
-        register(new Identifier(WintersAppend.MOD_ID, "gypsophila"), GYPSOPHILA);
+        register(GYPSOPHILA_ID, GYPSOPHILA);
+        AppendFuelsConfig.RegisteredFuels.put(GYPSOPHILA_ID, new Pair<>(0, 60));
         register(new Identifier(WintersAppend.MOD_ID, "potted_gypsophila"), GYPSOPHILA_POTTED);
     }
 

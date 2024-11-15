@@ -1,0 +1,18 @@
+{
+  "type": "winters_append:catalyst_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:glistering_melon_slice"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:gold_ingot"
+    },
+    null
+  ],
+  "output": "enchantment.deconstructive",
+  "brewing_time": 500,
+  "fuel_price": 20,
+  "purity_needed": 15
+}

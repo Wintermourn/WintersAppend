@@ -16,21 +16,23 @@ import net.minecraft.util.StringHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
+import wintermourn.wintersappend.config.AppendClientConfig;
+import wintermourn.wintersappend.config.AppendServerConfig;
 
 import java.util.List;
 
 public class TonicItem extends PotionItem {
     private static final int MAX_USE_TIME = 96;
-    private static final int MAX_EFFECTS = 3;
     public TonicItem(Settings settings) {
         super(settings);
     }
 
-    public int getMaxEffects() { return MAX_EFFECTS; }
+    public int getMaxEffects() { return AppendServerConfig.defaultTonicEffects; }
     public int getMaxUseTime(ItemStack stack)
     {
         return MAX_USE_TIME;
     }
+    public int getEffectLifetime() { return AppendServerConfig.defaultTonicLength; }
 
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         PlayerEntity playerEntity = user instanceof PlayerEntity ? (PlayerEntity)user : null;
@@ -40,6 +42,7 @@ public class TonicItem extends PotionItem {
 
         if (!world.isClient) {
             List<StatusEffectInstance> list = TonicUtil.getTonicEffectInstances(stack); //PotionUtil.getPotionEffects(stack);
+            assert list != null;
 
             for (StatusEffectInstance statusEffectInstance : list) {
                 if (statusEffectInstance.getEffectType().isInstant()) {
@@ -73,8 +76,21 @@ public class TonicItem extends PotionItem {
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(Text.translatable("tonic.duration", StringHelper.formatTicks(24000)).formatted(Formatting.GRAY));
+        int spanOffsetter;
+        if (stack.hasNbt()) {
+            assert stack.getNbt() != null;
+            spanOffsetter = (stack.getNbt().contains("spanOffset") ? stack.getNbt().getInt("spanOffset") : 0);
+        } else {
+            spanOffsetter = 0;
+        }
+        tooltip.add(Text.translatable("tonic.duration", StringHelper.formatTicks(this.getEffectLifetime() + spanOffsetter)).formatted(Formatting.GRAY));
         TonicUtil.buildTooltip(stack, tooltip, 1.0F);
+
+        if (spanOffsetter != 0 && AppendClientConfig.displayPenalty)
+        {
+            tooltip.add(Text.translatable("tonic.duration.penalty."+ (spanOffsetter > 0 ? "pos" : "neg"),
+                    StringHelper.formatTicks(spanOffsetter)).formatted(Formatting.DARK_GRAY));
+        }
     }
 
     @Override

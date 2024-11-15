@@ -1,5 +1,6 @@
 package wintermourn.wintersappend.item;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -23,14 +24,14 @@ import java.util.*;
 import java.util.function.IntFunction;
 
 public class TonicUtil {
-    public static final String TONIC_EFFECTS_KEY = "TonicEffects";
-    public static final String TONIC_EFFECTS_ID_KEY = "EffectIds";
-    public static final String TONIC_KEY = "Tonic";
+    public static final String TONIC_EFFECTS_KEY = "effects";
     private static final int DEFAULT_COLOR = 16253176;
     private static final Map<StatusEffect, Integer> TONIC_COLORS = new HashMap<>();
     private static final Map<StatusEffect, IntFunction<Text>> EFFECT_TEXT = new HashMap<>();
     private static final Map<StatusEffect, String> TONIC_NAMES = new HashMap<>();
     private static final Text NONE_TEXT;
+    private static final ItemStack TONIC_REP = new ItemStack(AppendItems.TONIC);
+
 
     public static List<ItemStack> registeredItems = new ArrayList<>();
 
@@ -42,7 +43,7 @@ public class TonicUtil {
     {
         TONIC_COLORS.put(effect, color);
     }
-    public static void registerName(StatusEffect effect, String translationKey)
+    public static void registerName(StatusEffect effect, @Translatable String translationKey)
     {
         TONIC_NAMES.put(effect, translationKey);
     }
@@ -55,6 +56,22 @@ public class TonicUtil {
     {
         return getStack(effects.toArray(new StatusEffect[0]));
     }
+    public static ItemStack getStack(List<StatusEffect> effects, int span)
+    {
+        ItemStack stack = getStack(effects.toArray(new StatusEffect[0]));
+        TonicUtil.setEffectSpan(stack, span);
+        return stack;
+    }
+    public static ItemStack getStack(TonicItem item, List<StatusEffect> effects)
+    {
+        return getStack(item, effects.toArray(new StatusEffect[0]));
+    }
+    public static ItemStack getStack(TonicItem item, List<StatusEffect> effects, int span)
+    {
+        ItemStack stack = getStack(item, effects.toArray(new StatusEffect[0]));
+        TonicUtil.setEffectSpan(stack, span);
+        return stack;
+    }
     public static ItemStack getStack(StatusEffect... effects)
     {
         return getStack((TonicItem) AppendItems.TONIC, effects);
@@ -63,89 +80,82 @@ public class TonicUtil {
     {
         ItemStack tonic = new ItemStack(item);
         NbtCompound nbt = tonic.getOrCreateNbt();
-        NbtList effectNames = new NbtList();
-        NbtList effectIds = new NbtList();
+        NbtList effectNbt = new NbtList();
 
-        List<String> effectNamesForSort = new ArrayList<>();
-        for (StatusEffect effect : effects) {
-            Identifier id = Registries.STATUS_EFFECT.getId(effect);
-            if (id == null) continue;
-
-            String textId = id.toString();
-            effectNamesForSort.add(textId);
-        }
-        Collections.sort(effectNamesForSort);
-
-        int currentId = -1;
-        for (String s : effectNamesForSort) {
-            NbtString ns = NbtString.of(s);
-            if (!effectNames.contains(ns))
+        Map<StatusEffect, Integer> effectData = new HashMap<>();
+        for (StatusEffect effect : effects)
+        {
+            if (effectData.containsKey(effect))
             {
-                currentId++;
-                effectNames.add(ns);
+                effectData.put(effect, effectData.get(effect) + 1);
+            } else
+            {
+                effectData.put(effect, 0);
             }
-            effectIds.add(NbtInt.of(currentId));
         }
-        nbt.put(TONIC_EFFECTS_KEY, effectNames);
-        nbt.put(TONIC_EFFECTS_ID_KEY, effectIds);
+        for (Map.Entry<StatusEffect, Integer> entry : effectData.entrySet().stream().sorted().toList())
+        {
+            Identifier id = Registries.STATUS_EFFECT.getId(entry.getKey());
+            assert id != null;
+            NbtList mini = new NbtList();
+            mini.add(NbtString.of(id.toString()));
+            mini.add(NbtString.of(entry.getValue().toString()));
+            effectNbt.add(mini);
+        }
+        nbt.put(TONIC_EFFECTS_KEY, effectNbt);
 
         return tonic;
     }
+    public static ItemStack getRepresentative()
+    {
+        return TONIC_REP;
+    }
 
 
-//    public static ItemStack setTonic(ItemStack stack, Tonic tonic)
-//    {
-//        Identifier id = TONICS.getId(tonic);
-//
-//        if (id == EMPTY)
-//        {
-//            stack.removeSubNbt(TONIC_EFFECTS_KEY);
-//            stack.removeSubNbt(TONIC_EFFECTS_ID_KEY);
-//        } else
-//        {
-//            ImmutableList<StatusEffect> statuses = tonic.getEffects();
-//            NbtList names = new NbtList();
-//            NbtList ids = new NbtList();
-//
-//            ge
-//            stack.getOrCreateNbt().put(TONIC_EFFECTS_KEY, new NbtList());
-//        }
-//    }
+    public static int getEffectSpan(ItemStack tonic)
+    {
+        NbtCompound itemNbt = tonic.getOrCreateNbt();
+        if (!(tonic.getItem() instanceof TonicItem)) return 0;
+        if (!itemNbt.contains(TONIC_EFFECTS_KEY) || !itemNbt.contains("spanOffset"))
+            return ((TonicItem) tonic.getItem()).getEffectLifetime();
 
+        return ((TonicItem) tonic.getItem()).getEffectLifetime() + itemNbt.getInt("spanOffset");
+    }
+
+    public static void setEffectSpan(ItemStack tonic, int time)
+    {
+        NbtCompound itemNbt = tonic.getOrCreateNbt();
+        itemNbt.putInt("spanOffset", time);
+    }
 
     public static int getColor(ItemStack tonic)
     {
         NbtCompound itemNbt = tonic.getOrCreateNbt();
         if (!(tonic.getItem() instanceof TonicItem)) return 0x385DC6;
-        if (!itemNbt.contains(TONIC_EFFECTS_KEY)) return DEFAULT_COLOR;
+        if (!itemNbt.contains(TONIC_EFFECTS_KEY) || itemNbt.contains("representative")) return DEFAULT_COLOR;
 
         Color finalColor = new Color(0x385DC6);
 
-        NbtList list = itemNbt.getList(TONIC_EFFECTS_KEY, NbtElement.STRING_TYPE);
-        NbtList ids = itemNbt.getList(TONIC_EFFECTS_ID_KEY, NbtElement.INT_TYPE);
+        NbtList effects = itemNbt.getList(TONIC_EFFECTS_KEY, NbtElement.LIST_TYPE);
 
-        for (int i = 0; i < ids.size(); i++) {
-            int effectId = ids.getInt(i);
+        for (NbtElement effect : effects) {
+            Identifier effectId = Identifier.tryParse(((NbtList) effect).getString(0));
+            if (effectId == null) continue;
 
-            String effect = list.getString(effectId);
-            Identifier id = new Identifier(effect);
-            if (Registries.STATUS_EFFECT.containsId(id))
-            {
-                StatusEffect status = Registries.STATUS_EFFECT.get(id);
-                assert status != null;
+            StatusEffect status = Registries.STATUS_EFFECT.get(effectId);
+            if (status == null) continue;
 
-                Color effectColor;
+            Color effectColor;
 
-                if (TONIC_COLORS.containsKey(status))
-                    effectColor = new Color(TONIC_COLORS.get(status));
-                else
-                    effectColor = new Color(status.getColor());
-                finalColor = new Color(
-                        (finalColor.getRed() + effectColor.getRed()) / 2,
-                        (finalColor.getGreen() + effectColor.getGreen()) / 2,
-                        (finalColor.getBlue() + effectColor.getBlue()) / 2
-                );
-            }
+            if (TONIC_COLORS.containsKey(status))
+                effectColor = new Color(TONIC_COLORS.get(status));
+            else
+                effectColor = new Color(status.getColor());
+            finalColor = new Color(
+                (finalColor.getRed() + effectColor.getRed()) / 2,
+                (finalColor.getGreen() + effectColor.getGreen()) / 2,
+                (finalColor.getBlue() + effectColor.getBlue()) / 2
+            );
         }
 
         return finalColor.getRGB();
@@ -158,31 +168,26 @@ public class TonicUtil {
 
         Color finalColor = new Color(0x385DC6);
 
-        NbtList list = itemNbt.getList(TONIC_EFFECTS_KEY, NbtElement.STRING_TYPE);
-        NbtList ids = itemNbt.getList(TONIC_EFFECTS_ID_KEY, NbtElement.INT_TYPE);
+        NbtList effects = itemNbt.getList(TONIC_EFFECTS_KEY, NbtElement.LIST_TYPE);
 
-        for (int i = 0; i < ids.size(); i++) {
-            int effectId = ids.getInt(i);
+        for (NbtElement effect : effects) {
+            Identifier effectId = Identifier.tryParse(((NbtList) effect).getString(0));
+            if (effectId == null) continue;
 
-            String effect = list.getString(effectId);
-            Identifier id = new Identifier(effect);
-            if (Registries.STATUS_EFFECT.containsId(id))
-            {
-                StatusEffect status = Registries.STATUS_EFFECT.get(id);
-                assert status != null;
+            StatusEffect status = Registries.STATUS_EFFECT.get(effectId);
+            if (status == null) continue;
 
-                Color effectColor;
+            Color effectColor;
 
-                if (TONIC_COLORS.containsKey(status))
-                    effectColor = new Color(TONIC_COLORS.get(status));
-                else
-                    effectColor = new Color(status.getColor());
-                finalColor = new Color(
-                        (finalColor.getRed() + effectColor.getRed()) / 2,
-                        (finalColor.getGreen() + effectColor.getGreen()) / 2,
-                        (finalColor.getBlue() + effectColor.getBlue()) / 2
-                );
-            }
+            if (TONIC_COLORS.containsKey(status))
+                effectColor = new Color(TONIC_COLORS.get(status));
+            else
+                effectColor = new Color(status.getColor());
+            finalColor = new Color(
+                (finalColor.getRed() + effectColor.getRed()) / 2,
+                (finalColor.getGreen() + effectColor.getGreen()) / 2,
+                (finalColor.getBlue() + effectColor.getBlue()) / 2
+            );
         }
 
         return new int[]{finalColor.getRed(),finalColor.getGreen(),finalColor.getBlue()};
@@ -190,81 +195,28 @@ public class TonicUtil {
 
     public static List<StatusEffectInstance> getTonicEffectInstances(ItemStack tonic)
     {
-        return getTonicEffectInstances(tonic.getOrCreateNbt());
-    }
+        if (!(tonic.getItem() instanceof TonicItem)) return null;
 
-    public static List<StatusEffectInstance> getTonicEffectInstances(NbtCompound nbt)
-    {
-        Map<StatusEffect, Integer> instances = new HashMap<>();
+        NbtCompound nbt = tonic.getOrCreateNbt();
+        List<StatusEffectInstance> instances = new ArrayList<>();
 
-        NbtList list = nbt.getList(TONIC_EFFECTS_KEY, NbtElement.STRING_TYPE);
-        NbtList ids = nbt.getList(TONIC_EFFECTS_ID_KEY, NbtElement.INT_TYPE);
-//        Map<Integer, Integer> usedEffects = new HashMap<>();
+        NbtList effects = nbt.getList(TONIC_EFFECTS_KEY, NbtElement.LIST_TYPE);
 
-        for (int i = 0; i < ids.size(); i++) {
-            int effectId = ids.getInt(i);
-
-            String effect = list.getString(effectId);
-            //WintersAppend.LOGGER.info(effect);
-
-            Identifier id = new Identifier(effect);
-            if (Registries.STATUS_EFFECT.containsId(id))
-            {
-                StatusEffect status = Registries.STATUS_EFFECT.get(id);
-                assert status != null;
-
-                if (instances.containsKey(status))
-                {
-                    instances.put(status, instances.get(status) + 1);
-                } else
-                    instances.put(status, 0);
-
-//                if (usedEffects.containsKey(effectId))
-//                    usedEffects.put(effectId, usedEffects.get(effectId)+1);
-//                else
-//                    usedEffects.put(effectId, 1);
+        for (NbtElement effect : effects) {
+            Identifier effectId = Identifier.tryParse(((NbtList) effect).getString(0));
+            if (effectId == null) continue;
+            int amplifier;
+            try { amplifier = Integer.parseInt(((NbtList) effect).getString(1)); } catch (NumberFormatException ignored) {
+                amplifier = 0;
             }
+
+            StatusEffect status = Registries.STATUS_EFFECT.get(effectId);
+            if (status == null) continue;
+
+            instances.add(new StatusEffectInstance(status, TonicUtil.getEffectSpan(tonic), amplifier));
         }
 
-//        List<String> newEffectsList = new ArrayList<>(usedEffects.size());
-//        List<Integer> newIdsList = new ArrayList<>(usedEffects.size());
-//        NbtList effectNbt = new NbtList();
-//
-//        usedEffects.forEach((id, a) -> {
-//            for (int i = 0; i < a; i++) {
-//                newEffectsList.add(list.getString(id));
-//            }
-//        });
-//
-//        Collections.sort(newEffectsList);
-//
-//        for (String s : newEffectsList) {
-//            effectNbt.add(NbtString.of(s));
-//        }
-//
-//        if (effectNbt != list)
-//        {
-//            NbtList effectIdNbt = new NbtList();
-//            usedEffects.forEach((id, a) -> {
-//                newIdsList.add(newEffectsList.indexOf(list.getString(id)));
-//            });
-//            Collections.sort(newIdsList);
-//
-//            for (Integer i : newIdsList) {
-//                effectIdNbt.add(NbtInt.of(i));
-//            }
-//
-//            nbt.put(TONIC_EFFECTS_KEY, effectNbt);
-//            nbt.put(TONIC_EFFECTS_ID_KEY, effectIdNbt);
-//        }
-
-        List<StatusEffectInstance> finalEffects = new ArrayList<>();
-
-        for (Map.Entry<StatusEffect, Integer> entry : instances.entrySet()) {
-            finalEffects.add(new StatusEffectInstance(entry.getKey(), 24000, entry.getValue()));
-        }
-
-        return finalEffects;
+        return instances;
     }
 
     public static Map<StatusEffect, Integer> getTonicEffects(ItemStack tonic)
@@ -276,58 +228,87 @@ public class TonicUtil {
     {
         Map<StatusEffect, Integer> effects = new HashMap<>();
 
-        NbtList list = nbt.getList(TONIC_EFFECTS_KEY, NbtElement.STRING_TYPE);
-        NbtList ids = nbt.getList(TONIC_EFFECTS_ID_KEY, NbtElement.INT_TYPE);
+        NbtList effectsNbt = nbt.getList(TONIC_EFFECTS_KEY, NbtElement.LIST_TYPE);
 
-        for (int i = 0; i < ids.size(); i++) {
-            int effectId = ids.getInt(i);
-
-            String effect = list.getString(effectId);
-            //WintersAppend.LOGGER.info(effect);
-
-            Identifier id = new Identifier(effect);
-            if (Registries.STATUS_EFFECT.containsId(id))
-            {
-                StatusEffect status = Registries.STATUS_EFFECT.get(id);
-                assert status != null;
-
-                if (effects.containsKey(status))
-                {
-                    effects.put(status, effects.get(status) + 1);
-                } else
-                    effects.put(status, 0);
+        for (NbtElement effect : effectsNbt) {
+            Identifier effectId = Identifier.tryParse(((NbtList) effect).getString(0));
+            if (effectId == null) continue;
+            int amplifier;
+            try { amplifier = Integer.parseInt(((NbtList) effect).getString(1)); } catch (NumberFormatException e) {
+                amplifier = 0;
             }
+
+            StatusEffect status = Registries.STATUS_EFFECT.get(effectId);
+            if (status == null) continue;
+
+            effects.put(status, amplifier);
         }
 
         return effects;
     }
 
+    /**
+     * Creates a list of Status Effects, with one instance per effect.<br>
+     * For example, Speed II and Haste IV would be <code>[speed, haste]</code>.
+     */
     public static List<StatusEffect> getTonicEffectsList(ItemStack tonic)
     {
         return getTonicEffectsList(tonic.getOrCreateNbt());
     }
 
+    /**
+     * Creates a list of Status Effects, with one instance per effect.<br>
+     * For example, Speed II and Haste IV would be <code>[speed, haste]</code>.
+     */
     public static List<StatusEffect> getTonicEffectsList(NbtCompound nbt)
     {
         List<StatusEffect> effects = new ArrayList<>();
 
-        NbtList list = nbt.getList(TONIC_EFFECTS_KEY, NbtElement.STRING_TYPE);
-        NbtList ids = nbt.getList(TONIC_EFFECTS_ID_KEY, NbtElement.INT_TYPE);
+        NbtList effectsNbt = nbt.getList(TONIC_EFFECTS_KEY, NbtElement.LIST_TYPE);
 
-        for (int i = 0; i < ids.size(); i++) {
-            int effectId = ids.getInt(i);
+        for (NbtElement effect : effectsNbt) {
+            Identifier effectId = Identifier.tryParse(((NbtList) effect).getString(0));
+            if (effectId == null) continue;
 
-            String effect = list.getString(effectId);
-            //WintersAppend.LOGGER.info(effect);
+            StatusEffect status = Registries.STATUS_EFFECT.get(effectId);
+            if (status == null) continue;
 
-            Identifier id = new Identifier(effect);
-            if (Registries.STATUS_EFFECT.containsId(id))
-            {
-                StatusEffect status = Registries.STATUS_EFFECT.get(id);
-                assert status != null;
+            effects.add(status);
+        }
 
-                effects.add(status);
+        return effects;
+    }
+
+    /**
+     * Creates a list of Status Effects, with equal duplicates to amplifiers.<br>
+     * For example, Speed II would be <code>[speed, speed]</code>.
+     */
+    public static List<StatusEffect> getTonicEffectsListFlat(ItemStack tonic)
+    {
+        return getTonicEffectsListFlat(tonic.getOrCreateNbt());
+    }
+
+    /**
+     * Creates a list of Status Effects, with equal duplicates to amplifiers.<br>
+     * For example, Speed II would be <code>[speed, speed]</code>.
+     */
+    public static List<StatusEffect> getTonicEffectsListFlat(NbtCompound nbt)
+    {
+        List<StatusEffect> effects = new ArrayList<>();
+
+        NbtList effectsNbt = nbt.getList(TONIC_EFFECTS_KEY, NbtElement.LIST_TYPE);
+
+        for (NbtElement effect : effectsNbt) {
+            Identifier effectId = Identifier.tryParse(((NbtList) effect).getString(0));
+            if (effectId == null) continue;
+            int amplifier;
+            try { amplifier = Integer.parseInt(((NbtList) effect).getString(1)); } catch (NumberFormatException ignored) {
+                amplifier = 0;
             }
+            StatusEffect status = Registries.STATUS_EFFECT.get(effectId);
+            if (status == null) continue;
+
+            for (int i = 0; i <= amplifier; i++) {effects.add(status);}
         }
 
         return effects;
@@ -375,9 +356,19 @@ public class TonicUtil {
 
     public static int getEffectsCount(NbtCompound nbt)
     {
-        NbtList list = nbt.getList(TONIC_EFFECTS_ID_KEY, NbtElement.INT_TYPE);
+        int count = 0;
+        NbtList list = nbt.getList(TONIC_EFFECTS_KEY, NbtElement.LIST_TYPE);
+        for (NbtElement element : list)
+        {
+            String amplifier = ((NbtList) element).getString(1);
+            try {
+                count += Integer.parseInt(amplifier) + 1;
+            } catch (NumberFormatException ignored) {
+                count += 1;
+            }
+        }
 
-        return list.size();
+        return count;
     }
 
     public static void buildTooltip(ItemStack stack, List<Text> tooltip, double durationMultiplier)
@@ -500,6 +491,9 @@ public class TonicUtil {
     static
     {
         NONE_TEXT = Text.translatable("tonic.none").formatted(Formatting.GRAY);
+        NbtCompound compound = new NbtCompound();
+        compound.putBoolean("representative", true);
+        TONIC_REP.setNbt(compound);
 
         registerText(StatusEffects.ABSORPTION, i -> Text.translatable("tonic.effect.absorption", (i+1) * 2));
     }

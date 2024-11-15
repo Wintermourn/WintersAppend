@@ -10,7 +10,9 @@ public class AppendRecipes {
 //            .buildAndRegister();
     public static void Register()
     {
-        Registry.register(Registries.RECIPE_SERIALIZER, TonicStandRecipeSerializer.ID, TonicStandRecipeSerializer.INSTANCE);
-        Registry.register(Registries.RECIPE_TYPE, TonicStandRecipe.Type.ID, TonicStandRecipe.Type.INSTANCE);
+        Registry.register(Registries.RECIPE_SERIALIZER, TonicBrewingRecipeSerializer.ID, TonicBrewingRecipeSerializer.INSTANCE);
+        Registry.register(Registries.RECIPE_TYPE, TonicBrewingRecipe.Type.ID, TonicBrewingRecipe.Type.INSTANCE);
+        Registry.register(Registries.RECIPE_SERIALIZER, CatalystRecipeSerializer.ID, CatalystRecipeSerializer.INSTANCE);
+        Registry.register(Registries.RECIPE_TYPE, CatalystRecipe.Type.ID, CatalystRecipe.Type.INSTANCE);
     }
 }

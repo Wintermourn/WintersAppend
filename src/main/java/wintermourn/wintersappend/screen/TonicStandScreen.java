@@ -1,16 +1,24 @@
 package wintermourn.wintersappend.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import wintermourn.wintersappend.WintersAppend;
+import wintermourn.wintersappend.client.gui.widget.UntexturedButtonWidget;
+import wintermourn.wintersappend.networking.AppendMessages;
 
 public class TonicStandScreen extends HandledScreen<TonicStandScreenHandler> {
     public static final Identifier TEXTURE = new Identifier(WintersAppend.MOD_ID,"textures/gui/container/tonic_stand.png");
+    boolean buttonHovered = false;
+
+    UntexturedButtonWidget brewingButtonWidget;
 
     public TonicStandScreen(TonicStandScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -20,6 +28,12 @@ public class TonicStandScreen extends HandledScreen<TonicStandScreenHandler> {
     protected void init() {
         super.init();
         this.titleX = (this.backgroundWidth - this.textRenderer.getWidth(this.title)) / 2;
+
+        int x = (width - backgroundWidth) / 2;
+        int y = (height - backgroundHeight) / 2;
+        brewingButtonWidget = new UntexturedButtonWidget(
+                x + 17, y + 61, 18, 11, this::onBrewingModeToggle);
+        this.addDrawableChild(brewingButtonWidget);
     }
 
     @Override
@@ -36,6 +50,7 @@ public class TonicStandScreen extends HandledScreen<TonicStandScreenHandler> {
         renderProgressArrow(context, x + 98, y + 16);
         renderFuelBar(context, x + 61, y + 44);
         renderPurityBar(context, x + 52, y + 51);
+        renderModeButton(context, x + 17, y + 60, handler.getBrewingMode(), brewingButtonWidget.isHovered());
 
         //render progress
         //render arrow
@@ -51,6 +66,11 @@ public class TonicStandScreen extends HandledScreen<TonicStandScreenHandler> {
         ctx.drawTexture(TEXTURE, x, y, 176,33, Math.round(18 * handler.getScaledFuel()), 4);
         ctx.drawTexture(TEXTURE, x, y, 176,29, Math.round(18 * handler.getScaledFuelEstimate()), 4);
     }
+    private void renderModeButton(DrawContext ctx, int x, int y, int mode, boolean buttonHovered)
+    {
+        ctx.drawTexture(TEXTURE, x + mode * 7, y, 176 + (buttonHovered ? 11 : 0),45, 11, 11);
+        ctx.drawTexture(TEXTURE, x + mode * 7, y, 198 + mode * 11,45, 11, 11);
+    }
     private void renderPurityBar(DrawContext ctx, int x, int y)
     {
         ctx.setShaderColor(1,0.6f,0.5f,1);
@@ -65,5 +85,13 @@ public class TonicStandScreen extends HandledScreen<TonicStandScreenHandler> {
         renderBackground(context);
         super.render(context, mouseX, mouseY, delta);
         drawMouseoverTooltip(context, mouseX, mouseY);
+    }
+
+    public void onBrewingModeToggle(ButtonWidget button)
+    {
+        handler.setBrewingMode(handler.getBrewingMode() == 1 ? 0 : 1);
+        ClientPlayNetworking.send(
+                AppendMessages.TOGGLE_BREWING_MODE,
+                PacketByteBufs.create().writeBlockPos(handler.blockEntity.getPos()));
     }
 }

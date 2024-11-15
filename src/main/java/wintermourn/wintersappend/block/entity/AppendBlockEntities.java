@@ -21,7 +21,6 @@ public class AppendBlockEntities {
 
     public static void Register()
     {
-
     }
 
 }

@@ -18,7 +18,7 @@ import wintermourn.wintersappend.integration.emi.recipe.EmiTonicRecipe;
 import wintermourn.wintersappend.item.AppendItems;
 import wintermourn.wintersappend.item.TonicItem;
 import wintermourn.wintersappend.item.TonicUtil;
-import wintermourn.wintersappend.recipe.TonicStandRecipe;
+import wintermourn.wintersappend.recipe.TonicBrewingRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +30,35 @@ public class EmiTonicCategory {
     public static final Comparison TONIC_COMPARISON = Comparison.of((recipe, item) -> {
         if (!(recipe.getItemStack().getItem() instanceof TonicItem) || !(item.getItemStack().getItem() instanceof TonicItem)) return false;
 
-        NbtList listA = recipe.getNbt().getList(TonicUtil.TONIC_EFFECTS_KEY, NbtElement.STRING_TYPE);
-        NbtList listB = item.getNbt().getList(TonicUtil.TONIC_EFFECTS_KEY, NbtElement.STRING_TYPE);
+        if (!recipe.hasNbt() || !item.hasNbt()) return false;
 
-        for (NbtElement element : listA) {
-            if (!listB.contains(element)) return false;
+        NbtList listA = recipe.getNbt().getList(TonicUtil.TONIC_EFFECTS_KEY, NbtElement.LIST_TYPE);
+        NbtList listB = item.getNbt().getList(TonicUtil.TONIC_EFFECTS_KEY, NbtElement.LIST_TYPE);
+        List<String> stringsA = new ArrayList<>(listA.size());
+        List<String> stringsB = new ArrayList<>(listB.size());
+        for (NbtElement element : listA)
+        {
+            if (element instanceof NbtList list)
+            {
+                String id = list.getString(0);
+                if (id != null) stringsA.add(id);
+            }
         }
-        return true;
+        for (NbtElement element : listB)
+        {
+            if (element instanceof NbtList list)
+            {
+                String id = list.getString(0);
+                if (id != null) stringsB.add(id);
+            }
+        }
+
+        if (stringsA.size() != stringsB.size()) return false;
+
+        for (String entry : stringsA)
+        {
+            if (!stringsB.contains(entry)) return false;
+        }return true;
     });
     public static final EmiRecipeCategory CATEGORY
             = new EmiRecipeCategory(
@@ -51,7 +73,7 @@ public class EmiTonicCategory {
 
         registry.addWorkstation(CATEGORY, WORKSTATION);
 
-        registry.setDefaultComparison(EmiStack.of(AppendItems.TONIC), Comparison.compareNbt());
+        registry.setDefaultComparison(EmiStack.of(AppendItems.TONIC), TONIC_COMPARISON); //Comparison.compareNbt()
 
         RecipeManager manager = registry.getRecipeManager();
 
@@ -59,7 +81,7 @@ public class EmiTonicCategory {
 
         List<StatusEffect> generatedEffects = new ArrayList<>();
 
-        for (TonicStandRecipe recipe : manager.listAllOfType(TonicStandRecipe.Type.INSTANCE))
+        for (TonicBrewingRecipe recipe : manager.listAllOfType(TonicBrewingRecipe.Type.INSTANCE))
         {
             registry.addRecipe(new EmiTonicRecipe(recipe));
 

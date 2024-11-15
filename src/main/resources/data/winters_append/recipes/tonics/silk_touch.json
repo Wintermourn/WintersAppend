@@ -1,0 +1,22 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:feather"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:lapis_block"
+    }
+  ],
+  "output": "winters_append:major/silk_touch",
+  "brewing_time": 1400,
+  "fuel_price": 25,
+  "purity_needed": 40,
+  "application_limit": 2
+}

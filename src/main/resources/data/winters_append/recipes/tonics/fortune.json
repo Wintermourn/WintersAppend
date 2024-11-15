@@ -1,0 +1,22 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "catalyst",
+      "catalyst": "enchantment.deconstructive"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:gold_block"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:redstone"
+    }
+  ],
+  "output": "winters_append:major/fortune",
+  "brewing_time": 1800,
+  "fuel_price": 35,
+  "purity_needed": 50,
+  "span_offset": -2400
+}

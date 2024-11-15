@@ -13,6 +13,7 @@ import wintermourn.wintersappend.effects.DamageResistStatusEffect;
 
 @Mixin(Entity.class)
 public class EntityMixin {
+    @SuppressWarnings("UnreachableCode")
     @Inject(method = "isInvulnerableTo", at = @At("RETURN"), cancellable = true)
     private void invulnerabilityCheck(DamageSource source, CallbackInfoReturnable<Boolean> cir)
     {

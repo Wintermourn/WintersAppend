@@ -3,9 +3,13 @@
   "package": "wintermourn.wintersappend.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "common.BlockMixin",
     "common.EntityMixin",
+    "common.IngredientMixin",
     "common.LivingEntityMixin",
-    "common.PlayerEntityMixin"
+    "common.MobVisibilityCacheMixin",
+    "common.PlayerEntityMixin",
+    "common.PlayerManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

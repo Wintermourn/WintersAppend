@@ -10,9 +10,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -20,8 +18,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -31,12 +27,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import wintermourn.wintersappend.block.AppendBlocks;
-import wintermourn.wintersappend.item.TonicItem;
+import wintermourn.wintersappend.config.AppendFuelsConfig;
 import wintermourn.wintersappend.item.TonicUtil;
 import wintermourn.wintersappend.networking.AppendMessages;
+import wintermourn.wintersappend.recipe.CatalystRecipe;
+import wintermourn.wintersappend.recipe.TonicBrewingRecipe;
 import wintermourn.wintersappend.recipe.TonicStandRecipe;
 import wintermourn.wintersappend.screen.TonicStandScreenHandler;
+import wintermourn.wintersappend.config.AppendServerConfig;
 
 import java.util.Optional;
 
@@ -47,6 +45,10 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
     public static final int FUEL_SLOT_ID = 4;
     public static final int PURITY_SLOT_ID = 5;
 
+    float fuelEfficiency = 1;
+    float purityEfficiency = 1;
+    float timeEfficiency = 1;
+
     DefaultedList<ItemStack> inventory;
     PropertyDelegate propertyDelegate;
 
@@ -54,10 +56,11 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
     int brewTime = 0;
     int fuel = 0;
     int purity = 0;
+    int fuelPartialTicks = 0;
+    int purityPartialTicks = 0;
 
-    float fuelEfficiency = 1;
-    float purityEfficiency = 1;
-    float timeEfficiency = 1;
+    int brewingMode = 0;
+    // 0 = tonic, 1 = catalyst
 
     TonicStandRecipe recipe;
     public TonicStandBlockEntity(BlockPos pos, BlockState state) {
@@ -72,6 +75,7 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
                     case 3 -> TonicStandBlockEntity.this.getFuelEstimate();
                     case 4 -> TonicStandBlockEntity.this.getMaxBrewTime();
                     case 5 -> TonicStandBlockEntity.this.getPurityEstimate();
+                    case 6 -> TonicStandBlockEntity.this.brewingMode;
                     default -> 0;
                 };
             }
@@ -81,12 +85,13 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
                     case 0 -> TonicStandBlockEntity.this.brewTime = value;
                     case 1 -> TonicStandBlockEntity.this.fuel = value;
                     case 2 -> TonicStandBlockEntity.this.purity = value;
+                    case 6 -> TonicStandBlockEntity.this.brewingMode = value;
                 }
 
             }
 
             public int size() {
-                return 6;
+                return 7;
             }
         };
     }
@@ -106,13 +111,6 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
         this.fuelEfficiency = fuel;
         this.purityEfficiency = purity;
         this.timeEfficiency = time;
-    }
-
-    private int getPurityEstimate() {
-        if (this.hasRecipe())
-        {
-            return this.purity - Math.round(this.recipe.maxPurityCost / this.getPurityEfficiency());
-        } else return this.getPurity();
     }
 
     public float getPurityEfficiency() {
@@ -237,17 +235,25 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
             markDirty(world, pos, state);
 
         ItemStack fuelStack = me.inventory.get(TonicStandBlockEntity.FUEL_SLOT_ID);
-        if (fuelStack.getItem() == Items.BLAZE_POWDER && me.fuel <= me.getMaxFuel() - 100)
+        if (!fuelStack.isEmpty())
         {
-            me.fuel += 100;
-            fuelStack.decrement(1);
+            int value = AppendFuelsConfig.GetHeatFuel(fuelStack);
+            if (value > -1 && me.fuel <= me.getMaxFuel() - value)
+            {
+                me.fuel += value;
+                fuelStack.decrement(1);
+            }
         }
 
         ItemStack purityStack = me.inventory.get(TonicStandBlockEntity.PURITY_SLOT_ID);
-        if (purityStack.getItem() == AppendBlocks.GYPSOPHILA.getItem() && me.purity <= me.getMaxPurity() - 60)
+        if (!purityStack.isEmpty())
         {
-            me.purity += 60;
-            purityStack.decrement(1);
+            int value = AppendFuelsConfig.GetPurity(purityStack);
+            if (value > -1 && me.purity <= me.getMaxPurity() - value)
+            {
+                me.purity += value;
+                purityStack.decrement(1);
+            }
         }
     }
 
@@ -292,11 +298,14 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
         inventory.get(2).decrement(1);
         inventory.get(3).decrement(1);
 
-        boolean hasPurity = this.getPurity() > this.recipe.maxPurityCost / this.getPurityEfficiency();
-        fuel -= Math.round(this.recipe.maxFuelCost / this.getFuelEfficiency()) * (hasPurity ? 1 : 2);
-        purity -= Math.round(this.recipe.maxPurityCost / this.getPurityEfficiency());
-        if (fuel < 0) fuel = 0;
-        if (purity < 0) purity = 0;
+        if (!AppendServerConfig.spendFuelDuringBrew)
+        {
+            boolean hasPurity = this.getPurity() > this.recipe.purityCost / this.getPurityEfficiency();
+            fuel -= (int) (Math.round(this.recipe.fuelCost / this.fuelEfficiency) * (hasPurity ? 1 : AppendServerConfig.impureFuelPenalty));
+            purity -= Math.round(this.recipe.purityCost / this.getPurityEfficiency());
+            if (fuel < 0) fuel = 0;
+            if (purity < 0) purity = 0;
+        }
 
         if (this.world != null && !this.world.isClient)
         {
@@ -315,12 +324,36 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
 
     private void increaseCraftProgress() {
         brewTime++;
+
+        if (AppendServerConfig.spendFuelDuringBrew)
+        {
+            float fuelPrice = (recipe.fuelCost / (recipe.brewingTime * this.timeEfficiency * ((purity > 0) ? 1 : AppendServerConfig.impureTimePenalty)))
+                    * this.fuelEfficiency * (fuelPartialTicks + 1)
+                    * ((purity > 0) ? 1 : AppendServerConfig.impureFuelPenalty);
+            float purityPrice = (recipe.purityCost / (recipe.brewingTime * this.timeEfficiency * ((purity > 0) ? 1 : AppendServerConfig.impureTimePenalty)))
+                    * this.purityEfficiency * (purityPartialTicks + 1);
+            if (fuelPrice < 1) fuelPartialTicks++; else
+            {
+                fuel -= (int) fuelPrice;
+                fuelPartialTicks = 0;
+            }
+            if (purityPrice < 1) purityPartialTicks++; else
+            {
+                purity -= (int) purityPrice;
+                purityPartialTicks = 0;
+            }
+        }
     }
 
     boolean hasRecipe() {
         if (getWorld() == null) return false;
-        Optional<TonicStandRecipe> recipe = getWorld().getRecipeManager().getFirstMatch(TonicStandRecipe.Type.INSTANCE, this, world);
-        this.recipe = recipe.orElse(null);
+        Optional<?> recipe = switch (brewingMode) {
+            case 0 -> getWorld().getRecipeManager().getFirstMatch(TonicBrewingRecipe.Type.INSTANCE, this, world);
+            case 1 -> getWorld().getRecipeManager().getFirstMatch(CatalystRecipe.Type.INSTANCE, this, world);
+            default -> Optional.empty();
+        };
+
+        this.recipe = (TonicStandRecipe) recipe.orElse(null);
 
         return this.recipe != null;
     }
@@ -328,9 +361,7 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
     boolean isOutputValid()
     {
         ItemStack stack = inventory.get(0);
-        Item item = stack.getItem();
-        return PotionUtil.getPotion(stack) == Potions.WATER ||
-                (item instanceof TonicItem && ((TonicItem) item).getMaxEffects() > TonicUtil.getEffectsCount(stack));
+        return recipe != null && recipe.isOutputValid(stack);
     }
 
     @Override
@@ -338,8 +369,11 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
         super.writeNbt(nbt);
 
         nbt.putInt("fuel",fuel);
+        if (fuelPartialTicks > 0) nbt.putInt("fuelP",fuelPartialTicks);
         nbt.putInt("brewTime",brewTime);
         nbt.putInt("purity",purity);
+        if (purityPartialTicks > 0) nbt.putInt("purityP",purityPartialTicks);
+        nbt.putInt("brewingMode", brewingMode);
 
         NbtList stacks = new NbtList();
 
@@ -357,8 +391,11 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
         super.readNbt(nbt);
 
         fuel = nbt.getInt("fuel");
+        fuelPartialTicks = nbt.getInt("fuelP");
         brewTime = nbt.getInt("brewTime");
         purity = nbt.getInt("purity");
+        purityPartialTicks = nbt.getInt("purityP");
+        brewingMode = nbt.getInt("brewingMode");
 
         NbtList stacks = nbt.getList("contents", NbtElement.COMPOUND_TYPE);
 
@@ -377,22 +414,20 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
     public int getMaxFuel() {
         return TonicStandBlockEntity.MAX_FUEL;
     }
-    public float getFuelEfficiency() {
-        return 1;
-    }
     public int getBrewTime() {
         return this.brewTime;
     }
     public int getMaxBrewTime() {
         if (this.hasRecipe())
         {
-            boolean hasPurity = this.getPurity() > this.recipe.maxPurityCost / this.getPurityEfficiency();
-            return Math.round(this.recipe.maxBrewingTime * (hasPurity ? 1 : 2.5f));
+            boolean hasPurity = this.getPurity() > this.recipe.purityCost / this.getPurityEfficiency();
+            return Math.round(this.recipe.brewingTime * (hasPurity ? 1 : AppendServerConfig.impureTimePenalty));
         } else
         {
             return 9999;
         }
     }
+    public float getBrewPercent() { return getBrewTime()/(float)getMaxBrewTime(); }
 
     @Nullable
     public Integer getFluidColor()
@@ -410,6 +445,16 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
     public void setOutputStack(ItemStack stack)
     {
         inventory.set(OUTPUT_SLOT_ID, stack);
+    }
+
+    public int getBrewingMode()
+    {
+        return brewingMode;
+    }
+
+    public void setBrewingMode(int mode)
+    {
+        this.brewingMode = mode;
     }
 
     @Override
@@ -430,10 +475,23 @@ public class TonicStandBlockEntity extends BlockEntity implements ExtendedScreen
     public int getFuelEstimate() {
         if (this.hasRecipe())
         {
-            boolean hasPurity = this.getPurity() > this.recipe.maxPurityCost / this.getPurityEfficiency();
+            boolean hasPurity = this.getPurity() > this.recipe.purityCost / this.getPurityEfficiency();
 
-            return this.fuel - Math.round(this.recipe.maxFuelCost / this.getFuelEfficiency() * (hasPurity ? 1 : 2));
+            if (AppendServerConfig.spendFuelDuringBrew)
+                return this.fuel - (int)Math.ceil(this.recipe.fuelCost / this.fuelEfficiency * (hasPurity ? 1 : AppendServerConfig.impureFuelPenalty) * (1-getBrewPercent()));
+            else
+                return this.fuel - Math.round(this.recipe.fuelCost / this.fuelEfficiency * (hasPurity ? 1 : AppendServerConfig.impureFuelPenalty));
         } else return this.getFuel();
+    }
+
+    private int getPurityEstimate() {
+        if (this.hasRecipe())
+        {
+            if (AppendServerConfig.spendFuelDuringBrew)
+                return this.purity - (int)Math.ceil(this.recipe.purityCost / this.getPurityEfficiency() * (1-getBrewPercent()));
+            else
+                return this.purity - Math.round(this.recipe.purityCost / this.getPurityEfficiency());
+        } else return this.getPurity();
     }
 
     @Override

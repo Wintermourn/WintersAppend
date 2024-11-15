@@ -1,0 +1,20 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "tag": "c:glass_blocks"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "tag": "minecraft:wool"
+    }
+  ],
+  "output": "winters_append:major/concealed",
+  "brewing_time": 1400,
+  "fuel_price": 20,
+  "purity_needed": 40,
+  "application_limit": 1,
+  "span_offset": -9600
+}

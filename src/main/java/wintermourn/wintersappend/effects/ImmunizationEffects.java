@@ -1,5 +1,6 @@
 package wintermourn.wintersappend.effects;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
@@ -17,6 +18,7 @@ public class ImmunizationEffects {
     public static final StatusEffect ANTIVENOM;
     public static final StatusEffect DETHORNING;
     public static final StatusEffect KINETIC_RESIST;
+    public static final StatusEffect PURITY;
 
     static
     {
@@ -51,6 +53,14 @@ public class ImmunizationEffects {
                         EntityAttributeModifier.Operation.MULTIPLY_TOTAL
                 );
 
+        PURITY = new PurityStatusEffect(StatusEffectCategory.BENEFICIAL, 0x33ffff, StatusEffectCategory.HARMFUL)
+                .addAttributeModifier(
+                        EntityAttributes.GENERIC_ARMOR,
+                        "3d2e1b0c-954d-4017-ad20-8b63c34c4478",
+                        -1,
+                        EntityAttributeModifier.Operation.ADDITION
+                );
+
     }
 
     public static void Register()
@@ -58,6 +68,7 @@ public class ImmunizationEffects {
         Registry.register(Registries.STATUS_EFFECT, new Identifier(WintersAppend.MOD_ID, "immune/antivenom"), ANTIVENOM);
         Registry.register(Registries.STATUS_EFFECT, new Identifier(WintersAppend.MOD_ID, "immune/thorns"), DETHORNING);
         Registry.register(Registries.STATUS_EFFECT, new Identifier(WintersAppend.MOD_ID, "immune/kinetic"), KINETIC_RESIST);
+        Registry.register(Registries.STATUS_EFFECT, new Identifier(WintersAppend.MOD_ID, "immune/purity"), PURITY);
 
         TonicUtil.registerColor(ANTIVENOM, 0x38A8D8);
         TonicUtil.registerColor(DETHORNING, 0xF8A828);
@@ -65,13 +76,15 @@ public class ImmunizationEffects {
         TonicUtil.registerText(ANTIVENOM, i -> Text.translatable( "tonic.effect.antivenom" ));
         TonicUtil.registerText(DETHORNING, i -> ResistText( "tonic.effect.dethorn", (1-i) * 50 ));
         TonicUtil.registerText(KINETIC_RESIST, i -> ResistText( "tonic.effect.kinetic", (5-i) * 10 ));
+        TonicUtil.registerText(PURITY, i -> Text.translatable("tonic.effect.purity", i + 1));
 
         TonicUtil.registerName(ANTIVENOM, "tonic.name.antivenom");
         TonicUtil.registerName(DETHORNING, "tonic.name.dethorn");
         TonicUtil.registerName(KINETIC_RESIST, "tonic.name.kinetic");
+        TonicUtil.registerName(PURITY, "tonic.name.purity");
     }
 
-    static Text ResistText(String key, double value)
+    static Text ResistText(@Translatable String key, double value)
     {
         if (value > 0)
             return Text.translatable(key, value);

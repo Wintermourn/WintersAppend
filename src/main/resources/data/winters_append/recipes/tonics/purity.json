@@ -1,0 +1,21 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "item",
+      "item": "winters_append:gypsophila"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:lily_of_the_valley"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "output": "winters_append:immune/purity",
+  "brewing_time": 1200,
+  "fuel_price": 15,
+  "purity_needed": 35
+}

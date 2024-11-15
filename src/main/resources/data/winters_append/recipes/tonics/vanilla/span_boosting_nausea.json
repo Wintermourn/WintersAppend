@@ -1,0 +1,23 @@
+{
+  "type": "winters_append:tonic_stand_recipe",
+  "inputs": [
+    {
+      "type": "tag",
+      "tag": "c:dyes"
+    },
+    {
+      "type": "tag",
+      "item": "minecraft:pufferfish"
+    },
+    {
+      "type": "tag",
+      "tag": "c:dyes"
+    }
+  ],
+  "output": "minecraft:nausea",
+  "application_limit": 99,
+  "brewing_time": 540,
+  "fuel_price": 5,
+  "purity_needed": 1,
+  "span_offset": 1800
+}

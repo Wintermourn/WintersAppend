@@ -10,6 +10,7 @@ import wintermourn.wintersappend.client.colors.ItemColorProviders;
 import wintermourn.wintersappend.client.renderer.block.TonicStandRenderer;
 import wintermourn.wintersappend.networking.AppendMessages;
 import wintermourn.wintersappend.screen.AppendScreens;
+import wintermourn.wintersappend.config.AppendClientConfig;
 
 public class WintersAppendClient implements ClientModInitializer {
     /**
@@ -17,6 +18,8 @@ public class WintersAppendClient implements ClientModInitializer {
      */
     @Override
     public void onInitializeClient() {
+        AppendClientConfig.HANDLER.load();
+
         BlockRenderLayerMap.INSTANCE.putBlock(AppendBlocks.TONIC_STAND.getBlock(), RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AppendBlocks.GYPSOPHILA.getBlock(), RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AppendBlocks.GYPSOPHILA_POTTED, RenderLayer.getCutout());

@@ -1,11 +1,15 @@
 {
   "group.winters_append.main": "Winter's Append",
+  "winters_append.title": "Winter's Append",
 
   "item.winters_append.tonic.effect.empty": "Uncraftable Tonic",
   "item.winters_append.tonic.effect.water": "Water Tonic",
   "item.winters_append.soul_meal": "Soul Meal",
   "tooltip.winters_append.soul_meal.0": "Has a much higher rate of dropping",
   "tooltip.winters_append.soul_meal.1": "Gypsophila when fertilizing.",
+
+  "winters_append.catalyst_none": "NULL Catalyst",
+  "custom.catalyst.enchantment.deconstructive": "Deconstructive Catalyst",
 
   "tonic.none": "◇ Empty",
   "tonic.effect_entry": "◇ %s",
@@ -14,6 +18,8 @@
   "tonic.fillLevel": "%s/%s Effects",
   "tonic.full": "Max Effects",
   "tonic.duration": "Lasts for %s",
+  "tonic.duration.penalty.pos": "Bonus: %s",
+  "tonic.duration.penalty.neg": "Penalty: %s",
 
   "tonic.name.none": "Empty Tonic",
   "tonic.mixture": "Blended Tonic",
@@ -28,6 +34,10 @@
   "tonic.name.dethorn": "Dethorning Tonic",
   "tonic.name.kinetic": "Velocity Protection Tonic",
   "tonic.name.nausea": "Hangover Tonic",
+  "tonic.name.purity": "Purifying Tonic",
+  "tonic.name.concealed": "Concealing Tonic",
+  "tonic.name.silk_touch": "Collecting Tonic",
+  "tonic.name.fortune": "Harvesting Tonic",
 
   "tonic.effect.absorption": "  +%s Absorption Hearts",
   "tonic.effect.antivenom": "  Cannot be poisoned.",
@@ -36,6 +46,15 @@
   "tonic.effect.dethorn.full": "  Not hurt by thorns.",
   "tonic.effect.kinetic": "  Take %s%% damage from kinetic sources.",
   "tonic.effect.kinetic.full": "  Not hurt by kinetic sources.",
+  "tonic.effect.purity": "  Removes %s effect(s) when they are applied.",
+  "tonic.effect.concealed": "  Cannot be seen by mobs until you attack.",
+  "tonic.effect.silk_touch.0": "  80% chance to activate Silk Touch.",
+  "tonic.effect.silk_touch.1": "  Activate Silk Touch when breaking blocks.",
+  "tonic.effect.fortune": "  Has a %s%% chance to activate Fortune.",
+
+  "effect.winters_append.major.concealed": "Concealed",
+  "effect.winters_append.major.silk_touch": "Silk Touch",
+  "effect.winters_append.major.fortune": "Fortune",
 
   "effect.winters_append.minor.pos.health_boost": "Minor Health Boost",
   "effect.winters_append.minor.pos.absorption": "Minor Absorption",
@@ -50,6 +69,7 @@
   "effect.winters_append.immune.antivenom": "Antivenom",
   "effect.winters_append.immune.thorns": "Dethorning",
   "effect.winters_append.immune.kinetic": "Kinetic Resist",
+  "effect.winters_append.immune.purity": "Purity",
 
   "attribute.name.append.resistance.physical": "Physical Damage Resistance",
   "attribute.name.append.resistance.projectile": "Projectile Damage Resistance",
@@ -62,14 +82,55 @@
 
   "container.winters_append.tonic": "Tonic Brewery",
 
-  "recipe.cost.fuelCost": "Costs %s Fuel",
-  "recipe.explainFuel": "At least 1 Fuel is required to brew.",
-  "recipe.cost.noPurity": "Insufficient Purity:",
-  "recipe.cost.purityCost": "Uses %s Purity",
-  "recipe.cost.time": "Brews in %ss",
-  "recipe.cost.limit": "Limit: %s",
-  "recipe.explainLimit": "This Tonic can only have %s of this\neffect, regardless of the number of\neffects it can hold.",
-  "recipe.explainPurity": "When Purity is exhausted, recipes\ncost more and take longer to brew.",
+  "recipe.winters_append.cost.fuelCost": "Costs %s Fuel",
+  "recipe.winters_append.explainFuel": "At least 1 Fuel is required to brew.",
+  "recipe.winters_append.cost.noPurity": "Insufficient Purity:",
+  "recipe.winters_append.cost.purityCost": "Uses %s Purity",
+  "recipe.winters_append.cost.time": "Brews in %ss",
+  "recipe.winters_append.cost.limit": "Limit: %s",
+  "recipe.winters_append.explainLimit": "This Tonic can only have %s of this\neffect, regardless of the number of\neffects it can hold.",
+  "recipe.winters_append.explainPurity": "When Purity is exhausted, recipes\ncost more and take longer to brew.",
+  "recipe.winters_append.output.span.good": "Positive Span Effect",
+  "recipe.winters_append.output.span.good.desc": "This recipe will increase the length of all of the tonic's effects by %s.",
+  "recipe.winters_append.output.span.bad": "Negative Span Effect",
+  "recipe.winters_append.output.span.bad.desc": "This recipe will decrease the length of all of the tonic's effects by %s.",
+  "recipe.winters_append.type.tonic": "This recipe only works in tonic brewing mode.",
+  "recipe.winters_append.type.catalyst": "This recipe only works in catalyst brewing mode.",
+  "recipe.winters_append.fuel.fuel": "Worth %s Fuel",
+  "recipe.winters_append.fuel.fuel.none": "Not Worth Fuel",
+  "recipe.winters_append.fuel.purity": "Worth %s Purity",
+  "recipe.winters_append.fuel.purity.none": "Not Worth Purity",
 
-  "emi.category.winters_append.tonic_stand": "Tonic Brewing"
+  "emi.category.winters_append.tonic_stand": "Tonic Brewing",
+  "emi.category.winters_append.tonic_stand_fuel": "Tonic Stand Fuels",
+  "span.seconds": "%s Seconds",
+
+  "config.winters_append.label_server": "Server Sided\n",
+  "config.winters_append.label_client": "Client Sided\n",
+
+  "config.winters_append.tonics.title": "Tonics",
+  "config.winters_append.tonics.desc": "Options to change how Tonics work, from duration to price.",
+
+  "group.winters_append.tonics.effects": "Effects",
+  "group.winters_append.tonics.effects.desc": "These control how Tonics' effects should work, from duration to quantity.",
+  "option.winters_append.tonics.default_effect_limit.name": "Default Effect Limit",
+  "option.winters_append.tonics.default_effect_limit.desc": "The maximum amount of effects that a standard tonic should have.",
+  "option.winters_append.tonics.default_length.name": "Default Length",
+  "option.winters_append.tonics.default_length.desc": "The standard length of a newly created Tonic.\nAll existing Tonics are adjusted to be offset from this duration.",
+  "option.winters_append.tonics.minimum_length.name": "Minimum Length",
+  "option.winters_append.tonics.minimum_length.desc": "How long a tonic should last with maximum time penalty.",
+
+  "group.winters_append.tonics.brewing": "Brewing",
+  "group.winters_append.tonics.brewing.desc": "These options control how Tonics should be brewed. How expensive they are, as well as penalties for missing fuel.",
+  "option.winters_append.tonics.force_commitment.name": "Spend Fuel During Brewing",
+  "option.winters_append.tonics.force_commitment.desc": "Whenever a valid recipe is in a Tonic Stand, the fuel will actively drain as it progresses.",
+  "option.winters_append.tonics.impure_fuel_penalty.name": "Impure: Fuel Multiplier",
+  "option.winters_append.tonics.impure_fuel_penalty.desc": "When out of Purity, this decides how much the fuel price increases.",
+  "option.winters_append.tonics.impure_time_penalty.name": "Impure: Time Multiplier",
+  "option.winters_append.tonics.impure_time_penalty.desc": "When out of Purity, this decides how much longer the brewing time should be.",
+
+  "group.winters_append.tonics.tooltip": "Tooltip",
+  "group.winters_append.tonics.tooltip.desc": "b",
+  "option.winters_append.tonics.show_duration_penalty.name": "Show Duration Penalty?",
+  "option.winters_append.tonics.show_duration_penalty.desc": "If applicable, shows the duration penalty on Tonics."
 }

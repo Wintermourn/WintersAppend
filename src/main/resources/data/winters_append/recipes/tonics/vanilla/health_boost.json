@@ -18,5 +18,6 @@
   "application_limit": 1,
   "brewing_time": 1200,
   "fuel_price": 30,
-  "purity_needed": 20
+  "purity_needed": 20,
+  "span_offset": -1200
 }
