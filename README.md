@@ -1,3 +1,5 @@
+> [!WARNING]
+> The Tonic NBT format has changed between 0.3.0 and 0.4.0, and all existing items will no longer function.
 # Winter's Append
 My first mod (to be shared publicly), feel free to shame me for bad practices (but please say how to fix them).
 
