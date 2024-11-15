@@ -101,7 +101,7 @@ public class EmiCatalystRecipe implements EmiRecipe {
         widgets.addTexture(TonicStandScreen.TEXTURE, 44, 29,
             Math.round(18 * (this.fuelCost / 100f)), 4, 176, 29);
         widgets.addTexture(TonicStandScreen.TEXTURE, 35, 36,
-            Math.round(27 * (this.purityCost / 200f)), 4, 176, 41);
+            Math.round(27 * (this.purityCost / 120f)), 4, 176, 41);
         widgets.addTexture(TonicStandScreen.TEXTURE, 7, 45,
             11, 11, 176, 45);
         widgets.addTexture(TonicStandScreen.TEXTURE, 7, 45,

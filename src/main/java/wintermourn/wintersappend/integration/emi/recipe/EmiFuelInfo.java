@@ -74,7 +74,7 @@ public class EmiFuelInfo implements EmiRecipe {
         widgets.addTexture(TonicStandScreen.TEXTURE, 18 + 2 + offset, 9 + offset,
             28, 6, 52, 50);
         widgets.addTexture(TonicStandScreen.TEXTURE, 18 + 2 + offset, 10 + offset,
-            Math.round(27 * (this.purity / 200f)), 4, 176, 41);
+            Math.round(27 * (this.purity / 120f)), 4, 176, 41);
 
         widgets.addTooltip(
             List.of(TooltipComponent.of(

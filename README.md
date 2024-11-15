@@ -5,6 +5,8 @@ My first mod (to be shared publicly), feel free to shame me for bad practices (b
 
 [List of Effects](Docs/Effects.md)<br>
 [Tonic Json Format](Docs/tonic_recipe.jsonc)<br>
+[Catalyst Json Format](Docs/catalyst_recipe.jsonc)<br>
+[Fuel Config Json Format](Docs/fuels.jsonc)<br>
 [Discord](https://discord.gg/UgCpxTkY9n)
 ## Features
 - Tonics!<br>

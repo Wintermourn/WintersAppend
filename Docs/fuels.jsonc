@@ -1,0 +1,13 @@
+// Fuels Config Format
+// Note: the actual file is normal .json and does not support comments.
+{
+  // Item ID
+  "minecraft:blaze_powder": {
+    // (Optional) The worth of the item in the fuel slot (Blaze powder icon, yellow bar)
+    // Note: The normal cap of the bar is 100
+    "fuel": 10,
+    // (Optional) The worth of the item in the purity slot (Green, longer bar).
+    // Note: The normal cap of the bar is 120
+    "purity": 10
+  }
+}
