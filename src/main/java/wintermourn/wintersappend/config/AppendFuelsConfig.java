@@ -100,11 +100,9 @@ public class AppendFuelsConfig {
     private static JsonObject createDefaultConfig() {
         JsonObject defaultJsonObject = new JsonObject();
         JsonObject blazeDefault = new JsonObject();
-        blazeDefault.addProperty("type", "heat");
-        blazeDefault.addProperty("value", 100);
+        blazeDefault.addProperty("fuel", 100);
         JsonObject gypsoDefault = new JsonObject();
-        gypsoDefault.addProperty("type", "purity");
-        gypsoDefault.addProperty("value", 60);
+        gypsoDefault.addProperty("purity", 60);
         // Add default weights for known items
         defaultJsonObject.add("minecraft:blaze_powder", blazeDefault);
         defaultJsonObject.add( WintersAppend.MOD_ID+":gypsophila", gypsoDefault);
