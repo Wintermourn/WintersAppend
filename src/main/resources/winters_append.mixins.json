@@ -8,8 +8,7 @@
     "common.IngredientMixin",
     "common.LivingEntityMixin",
     "common.MobVisibilityCacheMixin",
-    "common.PlayerEntityMixin",
-    "common.PlayerManagerMixin"
+    "common.PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

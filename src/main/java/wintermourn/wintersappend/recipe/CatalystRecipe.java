@@ -117,7 +117,7 @@ public class CatalystRecipe extends TonicStandRecipe implements Recipe<TonicStan
     public boolean isIgnoredInRecipeBook() { return true; }
 
     public RecipeSerializer<?> getSerializer() {
-        return TonicBrewingRecipeSerializer.INSTANCE;
+        return CatalystRecipeSerializer.INSTANCE;
     }
 
     public static class Type implements RecipeType<CatalystRecipe>

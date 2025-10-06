@@ -29,9 +29,9 @@ public class ServerDataReloadFinished implements ServerLifecycleEvents.EndDataPa
             PacketByteBuf fuels = AppendFuelsConfig.CreateFuelsPacket();
             for (ServerPlayerEntity player : Objects.requireNonNull(server.getPlayerManager().getPlayerList())) {
                 ServerPlayNetworking.send(
-                        player,
-                        AppendMessages.RECEIVE_SERVER_CONFIG,
-                        buf
+                    player,
+                    AppendMessages.RECEIVE_SERVER_CONFIG,
+                    buf
                 );
                 ServerPlayNetworking.send(
                     player,
