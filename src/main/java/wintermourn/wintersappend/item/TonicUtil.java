@@ -96,11 +96,13 @@ public class TonicUtil {
         for (Map.Entry<StatusEffect, Integer> entry : effectData.entrySet().stream().sorted().toList())
         {
             Identifier id = Registries.STATUS_EFFECT.getId(entry.getKey());
-            assert id != null;
-            NbtList mini = new NbtList();
-            mini.add(NbtString.of(id.toString()));
-            mini.add(NbtString.of(entry.getValue().toString()));
-            effectNbt.add(mini);
+            if (id != null)
+            {
+                NbtList mini = new NbtList();
+                mini.add(NbtString.of(id.toString()));
+                mini.add(NbtString.of(entry.getValue().toString()));
+                effectNbt.add(mini);
+            }
         }
         nbt.put(TONIC_EFFECTS_KEY, effectNbt);
 

@@ -5,6 +5,7 @@ import com.google.gson.*;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import wintermourn.wintersappend.WintersAppend;
@@ -21,6 +22,10 @@ public class TonicBrewingRecipeSerializer implements RecipeSerializer<TonicBrewi
 
         if (recipeJson.inputs == null) throw new JsonSyntaxException("Recipe inputs array is missing!");
         if (recipeJson.output == null) throw new JsonSyntaxException("Recipe output id is missing!");
+        Identifier output = Identifier.tryParse(recipeJson.output);
+        if (output == null) throw new JsonParseException("Recipe output `"+ recipeJson.output +"` is not a valid id!");
+        if (!Registries.STATUS_EFFECT.containsId(output))
+            throw new JsonParseException("Recipe output id `"+ output +"` is not a valid status effect id!");
 
         DefaultedList<Ingredient> ingredients = DefaultedList.ofSize(3, Ingredient.EMPTY);
 
@@ -34,7 +39,6 @@ public class TonicBrewingRecipeSerializer implements RecipeSerializer<TonicBrewi
             ingredients.set(i, Ingredient.fromJson(element, true));
         }
 
-        Identifier output = new Identifier(recipeJson.output);
 
         int brewTime = recipeJson.brewing_time != null ? recipeJson.brewing_time :  200;
         int fuelCost = recipeJson.fuel_price != null ? recipeJson.fuel_price :  10;
